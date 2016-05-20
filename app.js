@@ -4,10 +4,9 @@
   angular.module('wordFinder', [])
   .controller('mainController', function($scope, $q, $http, myServices, fileParser) {
     var books = [];
-    $scope.test = "test";
 
     $scope.word = "";
-    $scope.go = go;
+    $scope.getWord = getWord;
 
     activate();
     function activate() {
@@ -29,7 +28,7 @@
     }
 
     function getWord() {
-      console.log($scope.word)
+      fileParser.searchWord(books, $scope.word)
     }
 
     function epicfail(response) {
@@ -48,6 +47,17 @@
         bookObj.content = tagRemoval;
 
         return bookObj;
+      },
+      searchWord: function(books, word) {
+        var matchedItems = [];
+        var re = new RegExp(word, 'g');
+        for (var i = 0; i < books.length; i++) {
+
+          var matched = books[i].content.match(re)
+
+          matchedItems.push(matched);
+        }
+        console.log(matchedItems);
       }
     };
   })
