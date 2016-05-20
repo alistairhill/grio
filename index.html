@@ -11,7 +11,7 @@
     <form name="wordForm" ng-submit="getWord()">
       <div>
         <input type="text" name="wordFormInput" placeholder="Search books" ng-model="word">
-        <button class="submit-but" type="submit" value="Submit">
+        <button ng-disabled="!word" class="submit-but" type="submit" value="Submit">
           Search Word
         </button>
       </div>

@@ -16,7 +16,18 @@
       var promises = [
           myServices.getFiles("0608271h.html"),
           myServices.getFiles("w00001.html"),
-          myServices.getFiles("w00004.html")
+          myServices.getFiles("w00004.html"),
+          myServices.getFiles("w00005.html"),
+          myServices.getFiles("w00007.html"),
+          myServices.getFiles("w00010.html"),
+          myServices.getFiles("w00013.html"),
+          myServices.getFiles("w00020.html"),
+          myServices.getFiles("w00038.html"),
+          myServices.getFiles("w00040.html"),
+          myServices.getFiles("w00042.html"),
+          myServices.getFiles("w00044.html"),
+          myServices.getFiles("w00077.html"),
+          myServices.getFiles("w00078.html")
       ];
       $q.all(promises).then(function successHandler(results) {
         var index = 0;
@@ -35,7 +46,6 @@
           $scope.synonyms = response.noun.syn;
           $scope.synonyms.push(word);
         }
-        // $scope.books = fileParser.synSearcher(books, synonyms);
         $scope.books = fileParser.searchWord(books, $scope.synonyms);
       }, epicFail);
 
@@ -57,9 +67,9 @@
         var bookObj = {};
         var title = /(?:<title>)((?:.(?!<\/\1>))+.)(?:<\/title>)/;
         var tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
-        bookObj.fileName = fileName;
-        bookObj.title = book.match(title)[1];
-        bookObj.content = tagRemoval.toLowerCase();
+        bookObj.fileName = fileName || "";
+        bookObj.title = book.match(title)[1] || "";
+        bookObj.content = tagRemoval.toLowerCase() || "";
 
         return bookObj;
       },
@@ -78,14 +88,6 @@
         }
         return matchedItems;
       }
-      // synSearcher: function(books, syns) {
-      //   var results = [];
-      //   for (var i = 0; i < syns.length; i++) {
-      //     results.push(this.searchWord(books, syns[i]))
-      //   }
-      //   console.log(results)
-      //   return results;
-      // }
     };
   })
   .service('myServices', function($q, $http) {
