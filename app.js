@@ -2,12 +2,13 @@
   'use strict';
 
   angular.module('wordFinder', [])
-  .controller('mainController', function($scope, $q, $http, myServices, fileParser) {
+  .controller('mainController', function($scope, $q, $http, myServices, fileParser, $sce) {
     var books = [];
     var syns = [];
 
     $scope.word = "";
     $scope.getWord = getWord;
+    $scope.highlight = highlight;
 
     activate();
     function activate() {
@@ -30,12 +31,17 @@
     function getWord() {
       var word = $scope.word || "";
       myServices.getSyns(word).then(function successHandler(response) {
-        var synonyms = response.noun.syn;
-        synonyms.push(word);
+        $scope.synonyms = response.noun.syn;
+        $scope.synonyms.push(word);
         // $scope.books = fileParser.synSearcher(books, synonyms);
-        $scope.books = fileParser.searchWord(books, synonyms);
+        $scope.books = fileParser.searchWord(books, $scope.synonyms);
       }, epicFail);
 
+    }
+
+    function highlight(text) {
+      var syns = $scope.synonyms.join("|");
+      return $sce.trustAsHtml(text.replace(new RegExp(syns, 'gi'), '<span class="highlighted">$&</span>'));
     }
 
     function epicFail(response) {

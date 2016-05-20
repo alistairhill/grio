@@ -9,3 +9,7 @@ body {
 .container {
   margin: 10px;
 }
+
+.highlighted {
+  background-color: #FF0;
+}

@@ -39,7 +39,7 @@
             {{ match.title }}
           </td>
           <td class="col-xs-4">
-            {{ sent }}
+            <div ng-bind-html="highlight(sent)"></div>
           </td>
         </tr>
       </tbody>
