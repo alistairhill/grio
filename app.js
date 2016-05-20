@@ -50,12 +50,16 @@
       },
       searchWord: function(books, word) {
         var matchedItems = [];
-        var re = new RegExp(word, 'g');
+        var search = word + "(.*)(?=\.)";
+        var re = new RegExp(search, 'g');
+
         for (var i = 0; i < books.length; i++) {
+          var matchedObj = {};
+          matchedObj.file = books[i].file;
+          matchedObj.title = books[i].title;
+          matchedObj.matches = books[i].content.match(re);
 
-          var matched = books[i].content.match(re)
-
-          matchedItems.push(matched);
+          matchedItems.push(matchedObj);
         }
         console.log(matchedItems);
       }
