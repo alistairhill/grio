@@ -4,6 +4,7 @@
   angular.module('wordFinder', [])
   .controller('mainController', function($scope, $q, $http, myServices, fileParser) {
     var books = [];
+    var syns = [];
 
     $scope.word = "";
     $scope.getWord = getWord;
@@ -22,17 +23,21 @@
           var book = fileParser.parseBooks(results[i][0], results[i][1]);
           books.push(book);
         }
-        console.log(books);
-      }, epicfail);
+      }, epicFail);
 
     }
 
     function getWord() {
-      $scope.books = fileParser.searchWord(books, $scope.word);
+      var word = $scope.word || "";
+      myServices.getSyns(word).then(function successHandler(response) {
+        var synonyms = response.noun.syn;
+        synonyms.push(word);
+        $scope.books = fileParser.searchWord(books, synonyms);
+      }, epicFail);
 
     }
 
-    function epicfail(response) {
+    function epicFail(response) {
       console.error(response)
     }
 
@@ -49,9 +54,10 @@
 
         return bookObj;
       },
-      searchWord: function(books, word) {
+      searchWord: function(books, words) {
         var matchedItems = [];
-        var search = word + "(.*)(?=\.)";
+        var search = words.join("|") + "(.*)(?=\.)";
+        console.log(search)
         var re = new RegExp(search, 'g');
 
         for (var i = 0; i < books.length; i++) {
@@ -77,6 +83,23 @@
       $http(config)
         .success(function(data) {
           deferred.resolve([data, file]);
+        }).error(function(data) {
+          deferred.reject(data);
+        });
+      return deferred.promise;
+    };
+
+    this.getSyns = function(word) {
+      var deferred = $q.defer(),
+      apiKey = "2f79fef34b3bda9918801e189a4006fb/",
+      word = word + "/json";
+      var config = {
+        method: 'get',
+        url: "http://words.bighugelabs.com/api/2/" + apiKey + word
+      };
+      $http(config)
+        .success(function(data) {
+          deferred.resolve(data);
         }).error(function(data) {
           deferred.reject(data);
         });
