@@ -6,7 +6,16 @@
 </head>
 <body ng-app="wordFinder">
   <div class="container" ng-controller="mainController">
-    <div class="col-xs-12">{{test}}</div>
+    <form name="wordForm" class="form-horizontal" ng-submit="getWord()">
+      <div class="form-group">
+        <div class="col-xs-12">
+          <input type="text" name="wordFormInput" placeholder="Search books" ng-model="word">
+          <button type="submit" value="Submit">
+            Search Word
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
   <script type="text/javascript" src="app.js"></script>

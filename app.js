@@ -6,6 +6,9 @@
     var books = [];
     $scope.test = "test";
 
+    $scope.word = "";
+    $scope.go = go;
+
     activate();
     function activate() {
 
@@ -23,6 +26,10 @@
         console.log(books);
       }, epicfail);
 
+    }
+
+    function getWord() {
+      console.log($scope.word)
     }
 
     function epicfail(response) {
