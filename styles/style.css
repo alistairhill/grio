@@ -1,0 +1,11 @@
+* {
+  border: thin black solid;
+}
+
+body {
+  font-size: 14px;
+}
+
+.container {
+  margin: 10px;
+}
