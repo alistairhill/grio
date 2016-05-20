@@ -28,7 +28,8 @@
     }
 
     function getWord() {
-      fileParser.searchWord(books, $scope.word)
+      $scope.books = fileParser.searchWord(books, $scope.word);
+
     }
 
     function epicfail(response) {
@@ -55,13 +56,13 @@
 
         for (var i = 0; i < books.length; i++) {
           var matchedObj = {};
-          matchedObj.file = books[i].file;
+          matchedObj.file = books[i].fileName;
           matchedObj.title = books[i].title;
           matchedObj.matches = books[i].content.match(re);
 
           matchedItems.push(matchedObj);
         }
-        console.log(matchedItems);
+        return matchedItems;
       }
     };
   })

@@ -16,6 +16,34 @@
         </div>
       </div>
     </form>
+    <table class="">
+      <thead class="">
+      <tr>
+        <td class="col-xs-4">
+          File Name
+        </td>
+        <td class="col-xs-4">
+          Book Title
+        </td>
+        <td class="col-xs-4">
+          Matched Sentence
+        </td>
+      </tr>
+      </thead>
+      <tbody ng-repeat="match in books">
+        <tr ng-repeat="sent in match.matches track by $index">
+          <td class="col-xs-4">
+            {{ match.file }}
+          </td>
+          <td class="col-xs-4">
+            {{ match.title }}
+          </td>
+          <td class="col-xs-4">
+            {{ sent }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
   <script type="text/javascript" src="app.js"></script>
