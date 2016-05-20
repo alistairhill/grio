@@ -32,6 +32,7 @@
       myServices.getSyns(word).then(function successHandler(response) {
         var synonyms = response.noun.syn;
         synonyms.push(word);
+        // $scope.books = fileParser.synSearcher(books, synonyms);
         $scope.books = fileParser.searchWord(books, synonyms);
       }, epicFail);
 
@@ -56,8 +57,7 @@
       },
       searchWord: function(books, words) {
         var matchedItems = [];
-        var search = words.join("|") + "(.*)(?=\.)";
-        console.log(search)
+        var search = words.join("|(.*)(?=\.)");
         var re = new RegExp(search, 'g');
 
         for (var i = 0; i < books.length; i++) {
@@ -70,6 +70,14 @@
         }
         return matchedItems;
       }
+      // synSearcher: function(books, syns) {
+      //   var results = [];
+      //   for (var i = 0; i < syns.length; i++) {
+      //     results.push(this.searchWord(books, syns[i]))
+      //   }
+      //   console.log(results)
+      //   return results;
+      // }
     };
   })
   .service('myServices', function($q, $http) {
