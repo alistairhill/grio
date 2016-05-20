@@ -1,9 +1,22 @@
-* {
-  /*border: thin black solid;*/
+body {
+  font-size: 16px;
+  padding: 30px;
+  color: #383938;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
-  font-size: 14px;
+.wordfinder-title {
+  margin: 0 auto;
+  text-align: center;
+  padding: 5px 10px;
+}
+
+h1 {
+  border-bottom: 1px solid #CCC;
+}
+
+form {
+  margin: 0 auto;
 }
 
 .container {
@@ -12,4 +25,47 @@ body {
 
 .highlighted {
   background-color: #FF0;
+}
+
+.matched-table, td {
+  font-size: .95em;
+  border: 1px solid #CCC;
+  border-collapse: collapse;
+  padding: .3em;
+  width: 100%;
+  table-layout: fixed;
+}
+
+td.matched-table-head{
+  color: #FFF;
+  font-size: 1.5em;
+  background-color: #52AD46;
+}
+
+input, .submit-but  {
+  vertical-align: center;
+  padding: .3em;
+  margin-bottom: .5em;
+  width: 12em;
+  font-size: 1.1em;
+}
+.submit-but {
+  color: #fff;
+  background-color: #383938;
+  border-color: #8EADD8;
+}
+
+tr:nth-child(even) {
+  background: #FAFAFA;
+}
+tr:nth-child(odd) {
+  background: #FFF;
+}
+
+table > td {
+  vertical-align: top;
+}
+
+table tr, table td {
+  border: 1px solid #DDD;
 }

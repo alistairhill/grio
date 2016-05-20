@@ -29,10 +29,12 @@
     }
 
     function getWord() {
-      var word = $scope.word || "";
+      var word = $scope.word.toLowerCase() || "";
       myServices.getSyns(word).then(function successHandler(response) {
-        $scope.synonyms = response.noun.syn;
-        $scope.synonyms.push(word);
+        if (response.noun.syn) {
+          $scope.synonyms = response.noun.syn;
+          $scope.synonyms.push(word);
+        }
         // $scope.books = fileParser.synSearcher(books, synonyms);
         $scope.books = fileParser.searchWord(books, $scope.synonyms);
       }, epicFail);
@@ -57,7 +59,7 @@
         var tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
         bookObj.fileName = fileName;
         bookObj.title = book.match(title)[1];
-        bookObj.content = tagRemoval;
+        bookObj.content = tagRemoval.toLowerCase();
 
         return bookObj;
       },
