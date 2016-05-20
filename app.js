@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('wordFinder', [])
-  .controller('mainController', function($scope, $q, $http, myServices) {
+  .controller('mainController', function($scope, $q, $http, myServices, fileParser) {
     var books = [];
     $scope.test = "test";
 
@@ -17,7 +17,8 @@
       $q.all(promises).then(function successHandler(results) {
         var index = 0;
         for (var i = 0; i < results.length; i++) {
-          books.push(results[i]);
+          var book = fileParser.parseBooks(results[i][0], results[i][1]);
+          books.push(book);
         }
         console.log(books);
       }, epicfail);
@@ -28,6 +29,20 @@
       console.error(response)
     }
 
+  })
+  .factory('fileParser', function($http){
+    return {
+      parseBooks: function(book, fileName) {
+        var bookObj = {};
+        var title = /(?:<title>)((?:.(?!<\/\1>))+.)(?:<\/title>)/;
+        var tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
+        bookObj.fileName = fileName;
+        bookObj.title = book.match(title)[1];
+        bookObj.content = tagRemoval;
+
+        return bookObj;
+      }
+    };
   })
   .service('myServices', function($q, $http) {
 
