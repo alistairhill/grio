@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('wordFinder', [])
-  .controller('mainController', function($scope, $q, $http, myServices, fileParser, $sce) {
+  .controller('mainController', function($filter, $scope, $q, $http, myServices, fileParser, $sce) {
     var books = [];
     var syns = [];
 
@@ -47,11 +47,13 @@
           $scope.synonyms.push(word);
         }
         $scope.books = fileParser.searchWord(books, $scope.synonyms);
-      }, epicFail);
 
+      }, epicFail);
     }
 
     function highlight(text) {
+      // var textLimit = 140;
+      // var limited = $filter('limitTo')(text, textLimit);
       var syns = $scope.synonyms.join("|");
       return $sce.trustAsHtml(text.replace(new RegExp(syns, 'gi'), '<span class="highlighted">$&</span>'));
     }
@@ -68,27 +70,29 @@
         var title = /(?:<title>)((?:.(?!<\/\1>))+.)(?:<\/title>)/;
         var tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
         bookObj.fileName = fileName || "";
-        bookObj.title = book.match(title)[1] || "";
+        if (book.match(title)) bookObj.title = book.match(title)[1];
         bookObj.content = tagRemoval.toLowerCase() || "";
 
         return bookObj;
       },
       searchWord: function(books, words) {
         var matchedItems = [];
-        var search = words.join("|(.*)(?=\.)");
-        var re = new RegExp(search, 'g');
-
-        for (var i = 0; i < books.length; i++) {
-          var matchedObj = {};
-          matchedObj.file = books[i].fileName;
-          matchedObj.title = books[i].title;
-          matchedObj.matches = books[i].content.match(re);
-
-          matchedItems.push(matchedObj);
+        for (var x = 0; x < words.length; x++) {
+          var matcher = "[^.]{1,60} "+words[x]+" [^.]{1,60}";
+          var re = new RegExp(matcher, "g");
+          for (var i = 0; i < books.length; i++) {
+            if (books[i].content.match(re) !== null) {
+              var matchedObj = {};
+              matchedObj.file = books[i].fileName;
+              matchedObj.title = books[i].title;
+              matchedObj.matches = books[i].content.match(re);
+              matchedItems.push(matchedObj);
+            }
+          }
         }
         return matchedItems;
       }
-    };
+    }
   })
   .service('myServices', function($q, $http) {
 
