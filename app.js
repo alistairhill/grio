@@ -9,6 +9,7 @@
     $scope.word = null;
     $scope.getWord = getWord;
     $scope.highlight = highlight;
+    $scope.loading = false;
 
     getFileNames();
 
@@ -31,10 +32,12 @@
     }
 
     function getWord() {
+      $scope.loading = true;
       var word = $scope.word.toLowerCase();
       if (word !== null && word.length > 2) {
 
         myServices.getSyns(word).then(function successHandler(response) {
+          $scope.loading = false;
           if (response.noun.syn) {
             $scope.synonyms = response.noun.syn;
             $scope.synonyms.push(word);
@@ -68,20 +71,21 @@
         return bookObj;
       },
       searchWord: function(books, words) {
-        var matchedItems = [];
-        for (var x = 0; x < words.length; x++) {
-          var matcher = "[^.]{1,60} "+words[x]+" [^.]{1,60}";
-          var re = new RegExp(matcher, "g");
-          for (var i = 0; i < books.length; i++) {
-            if (books[i].content.match(re) !== null) {
-              var matchedObj = {};
-              matchedObj.file = books[i].fileName;
-              matchedObj.title = books[i].title;
-              matchedObj.matches = books[i].content.match(re);
-              matchedItems.push(matchedObj);
-            }
+        var matchedItems = [],
+        words = words.join("|"),
+        matcher = "[^.]{1,60} ("+words+") [^.]{1,60}",
+        re = new RegExp(matcher, "g");
+
+        for (var i = 0; i < books.length; i++) {
+          if (books[i].content.match(re) !== null) {
+            var matchedObj = {};
+            matchedObj.file = books[i].fileName;
+            matchedObj.title = books[i].title;
+            matchedObj.matches = books[i].content.match(re);
+            matchedItems.push(matchedObj);
           }
         }
+
         return matchedItems;
       },
       parseFileNames: function(fileNames) {

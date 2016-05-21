@@ -20,6 +20,7 @@ form {
 }
 
 .container {
+  z-index: 1;
   margin: 10px;
 }
 
@@ -53,13 +54,6 @@ input, .submit-but  {
   color: #fff;
   background-color: #383938;
   border-color: #8EADD8;
-}
-
-tr:nth-child(even) {
-  background: #FAFAFA;
-}
-tr:nth-child(odd) {
-  background: #FFF;
 }
 
 table > td {
