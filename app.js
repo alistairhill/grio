@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('wordFinder', [])
-  .controller('mainController', function($filter, $scope, $q, $http, myServices, fileParser, $sce) {
+  .controller('mainController', function($scope, $q, $http, myServices, fileParser, $sce) {
     var books = [];
     var syns = [];
 
@@ -10,33 +10,24 @@
     $scope.getWord = getWord;
     $scope.highlight = highlight;
 
-    activate();
-    function activate() {
+    getFileNames();
 
-      var promises = [
-          myServices.getFiles("0608271h.html"),
-          myServices.getFiles("w00001.html"),
-          myServices.getFiles("w00004.html"),
-          myServices.getFiles("w00005.html"),
-          myServices.getFiles("w00007.html"),
-          myServices.getFiles("w00010.html"),
-          myServices.getFiles("w00013.html"),
-          myServices.getFiles("w00020.html"),
-          myServices.getFiles("w00038.html"),
-          myServices.getFiles("w00040.html"),
-          myServices.getFiles("w00042.html"),
-          myServices.getFiles("w00044.html"),
-          myServices.getFiles("w00077.html"),
-          myServices.getFiles("w00078.html")
-      ];
-      $q.all(promises).then(function successHandler(results) {
-        var index = 0;
-        for (var i = 0; i < results.length; i++) {
-          var book = fileParser.parseBooks(results[i][0], results[i][1]);
+    function getFileNames() {
+      $http.get("../grio/data/")
+      .success(function (response) {
+        var fileNames = response.match(/(href=")([a-z])([0-9]*)(.html)/g);
+        fileLoader(fileNames);
+      })
+    }
+
+    function fileLoader(fileNames) {
+      for (var i = 0; i < fileNames.length; i++) {
+        var fileName = fileNames[i].replace(/href="/, "")
+        myServices.getFiles(fileName).then(function successHandler(response) {
+          var book = fileParser.parseBooks(response[0], response[1]);
           books.push(book);
-        }
-      }, epicFail);
-
+        }, epicFail);
+      }
     }
 
     function getWord() {
@@ -52,14 +43,12 @@
     }
 
     function highlight(text) {
-      // var textLimit = 140;
-      // var limited = $filter('limitTo')(text, textLimit);
       var syns = $scope.synonyms.join("|");
       return $sce.trustAsHtml(text.replace(new RegExp(syns, 'gi'), '<span class="highlighted">$&</span>'));
     }
 
     function epicFail(response) {
-      console.error(response)
+      console.error(response);
     }
 
   })
@@ -91,6 +80,9 @@
           }
         }
         return matchedItems;
+      },
+      parseFileNames: function(fileNames) {
+
       }
     }
   })
