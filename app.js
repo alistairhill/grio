@@ -3,8 +3,7 @@
 
   angular.module('wordFinder', [])
   .controller('mainController', function($scope, $q, $http, myServices, fileParser, $sce) {
-    var books = [];
-    var syns = [];
+    var files = [];
 
     $scope.word = null;
     $scope.getWord = getWord;
@@ -26,7 +25,7 @@
         var fileName = fileNames[i].replace(/href="/, "")
         myServices.getFiles(fileName).then(function successHandler(response) {
           var book = fileParser.parseBooks(response[0], response[1]);
-          books.push(book);
+          files.push(book);
         }, epicFail);
       }
     }
@@ -34,15 +33,14 @@
     function getWord() {
       $scope.loading = true;
       var word = $scope.word.toLowerCase();
-      if (word !== null && word.length > 2) {
-
+      if (word.length > 2) {
         myServices.getSyns(word).then(function successHandler(response) {
           $scope.loading = false;
           if (response.noun.syn) {
             $scope.synonyms = response.noun.syn;
-            $scope.synonyms.push(word);
           }
-          $scope.books = fileParser.searchWord(books, $scope.synonyms);
+          $scope.synonyms.push(word);
+          $scope.books = fileParser.searchWord(files, $scope.synonyms);
 
         }, epicFail);
       }
@@ -65,7 +63,7 @@
         var title = /(?:<title>)((?:.(?!<\/\1>))+.)(?:<\/title>)/;
         var tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
         bookObj.fileName = fileName || "";
-        if (book.match(title)) bookObj.title = book.match(title)[1];
+        book.match(title) ? bookObj.title = book.match(title)[1] : bookObj.title = "No title found";
         bookObj.content = tagRemoval.toLowerCase() || "";
 
         return bookObj;
@@ -85,11 +83,7 @@
             matchedItems.push(matchedObj);
           }
         }
-
         return matchedItems;
-      },
-      parseFileNames: function(fileNames) {
-
       }
     }
   })
