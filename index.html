@@ -3,49 +3,50 @@
   <title>Grio Challenge</title>
   <link rel="stylesheet" type="text/css" href="styles/style.css">
 </head>
-<body ng-app="wordFinder">
-  <div class="overlay">
-    <div class="wordfinder-title">
-      <h1>Search Words</h1>
-    </div>
-    <div class="container" ng-controller="mainController">
-      <form name="wordForm" ng-submit="wordForm.$valid && getWord()">
-        <div>
-          <input type="text" name="wordFormInput" placeholder="Search books" ng-model="word" required>
-          <button class="submit-but" type="submit" value="Submit">
-            Search Word
-          </button>
-        </div>
-      </form>
-      <table class="matched-table">
-        <thead>
-        <tr>
-          <td class="matched-table-head">
-            File Name
+<body ng-app="wordFinder" ng-controller="mainController">
+  <div class="overlay" ng-class="{'loading': loading}">
+    <div ng-class="{'loading-text': loading}"></div>
+  </div>
+  <div class="wordfinder-title">
+    <h1>Search Words</h1>
+  </div>
+  <div class="container">
+    <form name="wordForm" ng-submit="wordForm.$valid && getWord()">
+      <div>
+        <input type="text" name="wordFormInput" placeholder="Search books" ng-model="word" required>
+        <button class="submit-but" type="submit" value="Submit">
+          Search Word
+        </button>
+      </div>
+    </form>
+    <table class="matched-table">
+      <thead>
+      <tr>
+        <td class="matched-table-head">
+          File Name
+        </td>
+        <td class="matched-table-head">
+          Book Title
+        </td>
+        <td class="matched-table-head">
+          Matched Sentence
+        </td>
+      </tr>
+      </thead>
+      <tbody ng-repeat="match in books">
+        <tr ng-repeat="sent in match.matches track by $index">
+          <td>
+            {{ match.file }}
           </td>
-          <td class="matched-table-head">
-            Book Title
+          <td>
+            {{ match.title }}
           </td>
-          <td class="matched-table-head">
-            Matched Sentence
+          <td>
+            <div ng-bind-html="highlight(sent)"></div>
           </td>
         </tr>
-        </thead>
-        <tbody ng-repeat="match in books">
-          <tr ng-repeat="sent in match.matches track by $index">
-            <td>
-              {{ match.file }}
-            </td>
-            <td>
-              {{ match.title }}
-            </td>
-            <td>
-              <div ng-bind-html="highlight(sent)"></div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </tbody>
+    </table>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
   <script type="text/javascript" src="app.js"></script>
