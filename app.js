@@ -31,6 +31,7 @@
     }
 
     function getWord() {
+      $scope.books = [];
       $scope.loading = true;
       var word = $scope.word.toLowerCase();
       if (word.length > 2) {
