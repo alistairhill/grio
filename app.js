@@ -6,7 +6,7 @@
     var books = [];
     var syns = [];
 
-    $scope.word = "";
+    $scope.word = null;
     $scope.getWord = getWord;
     $scope.highlight = highlight;
 
@@ -31,15 +31,18 @@
     }
 
     function getWord() {
-      var word = $scope.word.toLowerCase() || "";
-      myServices.getSyns(word).then(function successHandler(response) {
-        if (response.noun.syn) {
-          $scope.synonyms = response.noun.syn;
-          $scope.synonyms.push(word);
-        }
-        $scope.books = fileParser.searchWord(books, $scope.synonyms);
+      var word = $scope.word.toLowerCase();
+      if (word !== null && word.length > 2) {
 
-      }, epicFail);
+        myServices.getSyns(word).then(function successHandler(response) {
+          if (response.noun.syn) {
+            $scope.synonyms = response.noun.syn;
+            $scope.synonyms.push(word);
+          }
+          $scope.books = fileParser.searchWord(books, $scope.synonyms);
+
+        }, epicFail);
+      }
     }
 
     function highlight(text) {
