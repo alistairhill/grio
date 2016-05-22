@@ -41,7 +41,7 @@
             $scope.synonyms = response.noun.syn;
           }
           $scope.synonyms.push(word);
-          $scope.books = fileParser.searchWord(files, $scope.synonyms);
+          $scope.books = JSON.parse(fileParser.searchWord(files, $scope.synonyms));
 
         }, epicFail);
       }
@@ -84,7 +84,8 @@
             matchedItems.push(matchedObj);
           }
         }
-        return matchedItems;
+        var json = JSON.stringify(matchedItems)
+        return json;
       }
     }
   })

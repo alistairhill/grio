@@ -35,13 +35,13 @@
       </thead>
       <tbody ng-repeat="match in books">
         <tr ng-repeat="sent in match.matches track by $index">
-          <td>
+          <td ng-cloak>
             {{ match.file }}
           </td>
-          <td>
+          <td ng-cloak>
             {{ match.title }}
           </td>
-          <td>
+          <td ng-cloak>
             <div ng-bind-html="highlight(sent)"></div>
           </td>
         </tr>
