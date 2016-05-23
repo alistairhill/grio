@@ -93,3 +93,7 @@ table tr, table td {
 div.radio > label > input {
   width: 20px;
 }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}

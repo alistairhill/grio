@@ -75,9 +75,10 @@
   .factory('myFactory', function($http){
     return {
       parseBooks: function(book, fileName) {
-        var bookObj = {};
-        var title = /(?:<title>)((?:.(?!<\/\1>))+.)(?:<\/title>)/;
-        var tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
+        var bookObj = {},
+        title = /(?:<title>)((?:.(?!<\/\1>))+.)(?:<\/title>)/,
+        tagRemoval = book.replace(/(<([^>]+)>)/ig, "");
+
         bookObj.fileName = fileName || "";
         book.match(title) ? bookObj.title = book.match(title)[1] : bookObj.title = "No title found";
         bookObj.content = tagRemoval.toLowerCase() || "";
@@ -88,7 +89,7 @@
         console.time('search time');
         var matchedItems = [],
         words = words.join("|"),
-        matcher = "\b[^.]{1,60} ("+words+") [^.]{1,60}\b",
+        matcher = "\\b[^.]{1,60} ("+words+") [^.]{1,60}\\b",
         re = new RegExp(matcher, "g");
 
         for (var i = 0; i < books.length; i++) {
