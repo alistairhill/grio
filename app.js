@@ -2,14 +2,14 @@
   'use strict';
 
   angular.module('wordFinder', [])
-  .controller('mainController', function($scope, $q, $http, myServices, fileParser, $sce) {
+  .controller('mainController', function($scope, $q, $http, myServices, myFactory, $sce) {
     var files = [];
+    var userSearch = [];
 
-    $scope.word = null;
     $scope.getWord = getWord;
     $scope.highlight = highlight;
-    $scope.loading = false;
 
+    resetSearch();
     getFileNames();
 
     function getFileNames() {
@@ -24,40 +24,55 @@
       for (var i = 0; i < fileNames.length; i++) {
         var fileName = fileNames[i].replace(/href="/, "")
         myServices.getFiles(fileName).then(function successHandler(response) {
-          var book = fileParser.parseBooks(response[0], response[1]);
+          var book = myFactory.parseBooks(response[0], response[1]);
           files.push(book);
         }, epicFail);
       }
     }
 
     function getWord() {
-      $scope.books = [];
       $scope.loading = true;
+      $scope.books = [];
+      userSearch = [];
       var word = $scope.word.toLowerCase();
-      if (word.length > 2) {
-        myServices.getSyns(word).then(function successHandler(response) {
-          $scope.loading = false;
-          if (response.noun.syn) {
-            $scope.synonyms = response.noun.syn;
-          }
-          $scope.synonyms.push(word);
-          $scope.books = JSON.parse(fileParser.searchWord(files, $scope.synonyms));
 
-        }, epicFail);
-      }
+      myServices.getSyns(word).then(function successHandler(response) {
+        $scope.loading = false;
+        if ($scope.searchBy === "word") {
+          userSearch.push(word);
+          getResults();
+
+        } else if ($scope.searchBy === "synonym") {
+          if (response && response.noun.syn) {
+            userSearch = response.noun.syn;
+            getResults();
+          }
+        }
+      }, epicFail);
+    }
+
+    function getResults() {
+      $scope.books = JSON.parse(myFactory.searchWord(files, userSearch));
+      resetSearch();
+    }
+
+    function resetSearch() {
+      $scope.searchBy = "word";
+      $scope.word = null;
     }
 
     function highlight(text) {
-      var syns = $scope.synonyms.join("|");
-      return $sce.trustAsHtml(text.replace(new RegExp(syns, 'gi'), '<span class="highlighted">$&</span>'));
+      var words = userSearch.join("|");
+      return $sce.trustAsHtml(text.replace(new RegExp(words, 'gi'), '<span class="highlighted">$&</span>'));
     }
 
     function epicFail(response) {
+      $scope.loading = false;
       console.error(response);
     }
 
   })
-  .factory('fileParser', function($http){
+  .factory('myFactory', function($http){
     return {
       parseBooks: function(book, fileName) {
         var bookObj = {};
@@ -70,6 +85,7 @@
         return bookObj;
       },
       searchWord: function(books, words) {
+        console.time('search time');
         var matchedItems = [],
         words = words.join("|"),
         matcher = "[^.]{1,60} ("+words+") [^.]{1,60}",
@@ -85,6 +101,8 @@
           }
         }
         var json = JSON.stringify(matchedItems)
+        console.timeEnd('search time');
+
         return json;
       }
     }

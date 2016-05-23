@@ -12,6 +12,16 @@
   </div>
   <div class="container">
     <form name="wordForm" ng-submit="wordForm.$valid && getWord()">
+      <div class="radio">
+        <label>
+          <input type="radio" ng-model="searchBy" value="word">
+          <span>Search by word</span>
+        </label>
+        <label>
+          <input type="radio" ng-model="searchBy" value="synonym">
+          <span>Search by word synonyms</span>
+        </label>
+      </div>
       <div>
         <input type="text" name="wordFormInput" placeholder="Search books" ng-model="word" required>
         <button class="submit-but" type="submit" value="Submit">
