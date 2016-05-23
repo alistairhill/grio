@@ -88,7 +88,7 @@
         console.time('search time');
         var matchedItems = [],
         words = words.join("|"),
-        matcher = "[^.]{1,60} ("+words+") [^.]{1,60}",
+        matcher = "\b[^.]{1,60} ("+words+") [^.]{1,60}\b",
         re = new RegExp(matcher, "g");
 
         for (var i = 0; i < books.length; i++) {
