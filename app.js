@@ -62,8 +62,9 @@
     }
 
     function highlight(text) {
-      var words = userSearch.join("|");
-      return $sce.trustAsHtml(text.replace(new RegExp(words, 'gi'), '<span class="highlighted">$&</span>'));
+      var words = userSearch.join("|"),
+      re = " ("+words+") ";
+      return $sce.trustAsHtml(text.replace(new RegExp(re, 'gi'), '<span class="highlighted">$&</span>'));
     }
 
     function epicFail(response) {
